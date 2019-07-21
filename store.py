@@ -34,6 +34,28 @@ def category():
             else:
                 return json.dumps({"STATUS": "ERROR", "MSG": "I'm not sure if there are more errors possible, but if there are, this should suffice!", "CODE": response.status_code})
 
+@delete("/category/<CAT_ID>")
+def del_category(CAT_ID):
+    try:
+        with connection.cursor() as cursor:
+            sql = "DELETE FROM `categories` WHERE `CAT_ID` VALUES (%s)"
+            cursor.execute(sql, (CAT_ID))
+            return json.dumps({"STATUS": "SUCCESS", "MSG": "Category deleted successfully", "CODE": response.status_code})
+    except:
+        if response.status_code == 404:
+            return json.dumps({"STATUS": "ERROR", "MSG": "Category not found", "CODE": response.status_code})
+        elif response.status_code == 500:
+            return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": response.status_code})
+        else:
+            return json.dumps({"STATUS": "ERROR", "MSG": "I'm not sure if there are more errors possible, but if there are, this should suffice!", "CODE": response.status_code})
+
+@get("/categories")
+def get_categories():
+    try:
+        with connection.cursor() as cursor: 
+            sql = "SELECT * FROM categories"
+
+
 
 
 @get("/admin")
@@ -61,4 +83,4 @@ def images(filename):
     return static_file(filename, root='images')
 
 
-run(host='0.0.0.0', port=7000)
+run(host='0.0.0.0', port=7000, reloader=True)
