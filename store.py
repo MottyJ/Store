@@ -54,8 +54,12 @@ def get_categories():
     try:
         with connection.cursor() as cursor: 
             sql = "SELECT * FROM categories"
-
-
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            return json.dumps({"STATUS": "SUCCESS", "MSG": "Categories fetched", "CATEGORIES": result, "CODE": response.status_code})
+    except:
+        if response.status_code == 500:
+            return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": response.status_code})
 
 
 @get("/admin")
