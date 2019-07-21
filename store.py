@@ -16,23 +16,23 @@ connection = pymysql.connect(
 @post("/category")
 def category():
     category_name = request.forms.get("name")
-    try:
-        with connection.cursor() as cursor:
-            if len(category_name) == 0:
-                return json.dumps({"STATUS": "ERROR", "MSG": "Name parameter is missing", "CODE": response.status_code})
-            else:
+    if len(category_name) == 0:
+        return json.dumps({"STATUS": "ERROR", "MSG": "Name parameter is missing", "CODE": response.status_code})
+    else:
+        try:
+            with connection.cursor() as cursor:
                 sql = "INSERT INTO `categories` (`Name`) VALUES (%s)"
                 cursor.execute(sql, (category_name))
                 return json.dumps({"STATUS": "SUCCESS", "CAT_ID": cursor.lastrowid, "CODE": response.status_code})
-    except:
-        if response.status_code == 200:
-            return json.dumps({"STATUS": "ERROR", "MSG": "Category already exists", "CODE": response.status_code})
-        elif response.status_code == 400:
-            return json.dumps({"STATUS": "ERROR", "MSG": "Bad request", "CODE": response.status_code})
-        elif response.status_code == 500:
-            return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": response.status_code})
-        else:
-            return json.dumps({"STATUS": "ERROR", "MSG": "I'm not sure if there are more errors possible, but if there are, this should suffice!", "CODE": response.status_code})
+        except:
+            if response.status_code == 200:
+                return json.dumps({"STATUS": "ERROR", "MSG": "Category already exists", "CODE": response.status_code})
+            elif response.status_code == 400:
+                return json.dumps({"STATUS": "ERROR", "MSG": "Bad request", "CODE": response.status_code})
+            elif response.status_code == 500:
+                return json.dumps({"STATUS": "ERROR", "MSG": "Internal error", "CODE": response.status_code})
+            else:
+                return json.dumps({"STATUS": "ERROR", "MSG": "I'm not sure if there are more errors possible, but if there are, this should suffice!", "CODE": response.status_code})
 
 
 
